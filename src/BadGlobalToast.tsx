@@ -19,6 +19,7 @@ export interface BadToastMessage {
   // が、そもそも内部管理用の値を公開するのは良くない。
   // 別途内部のステートとして持つべき。
   show?: boolean
+  createdAt?: number
 }
 
 export function BadGlobalToast({ messages, setMessages }: Props) {
@@ -30,6 +31,43 @@ export function BadGlobalToast({ messages, setMessages }: Props) {
 
     // deps違反
   }, [])
+
+  // messagesをdepsに入れないといけないから別effectにしてるが、その動機は良くない。
+  useEffect(() => {
+    if (!messages) return
+
+    messages.forEach((message) => {
+      // mutateはしてはいけない！
+      if (message.createdAt === undefined) {
+        message.createdAt = Date.now()
+      }
+    })
+
+    // ポーリングしようって発想がやばいな。
+    // ステートは変わらないからチェック対象が線形に増えるし（まあ計算量は大したことないが）。
+    const interval = setInterval(() => {
+      setMessages?.(
+        // やはりsetMessagesとArray.mapとmutateの悪魔合体。
+        messages.map((message) => {
+          // undefinedとの算術演算はNaNになって、NaNとの大小比較はつねにfalseだから、
+          // ここでのnon-null assertionは危険。
+          if (Date.now() - message.createdAt! >= 3_000) {
+            message.show = false
+          }
+
+          return message
+        })
+      )
+    }, 1_000)
+
+    // さすがにクリーンアップしないと挙動が狂ってしまうからクリーンアップはやっておく。
+    // （トーストが点滅してしまう）
+    return () => {
+      clearInterval(interval)
+    }
+
+    // deps違反
+  }, [messages])
 
   return (
     <ToastContainer position="top-end" className="p-3" style={{ zIndex: 100 }}>
