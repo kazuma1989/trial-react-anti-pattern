@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Button, Card, Container, Stack } from "react-bootstrap"
 import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
+import { GoodGlobalToast, ToastRef } from "./GoodGlobalToast"
 
 export function App() {
   const [play, setPlay] = useState(false)
@@ -27,9 +28,13 @@ export function App() {
     },
   ])
 
+  const toast$ = useRef<ToastRef>()
+
   return (
     <Container fluid="xxl">
       <BadGlobalToast messages={messages} setMessages={setMessages} />
+
+      <GoodGlobalToast methodRef={toast$} />
 
       <Stack gap={3}>
         <div>
@@ -44,7 +49,18 @@ export function App() {
               ])
             }}
           >
-            トースト追加
+            トースト追加 (Bad)
+          </Button>
+
+          <Button
+            onClick={() => {
+              toast$.current?.notify({
+                type: "success",
+                message: "Nice!",
+              })
+            }}
+          >
+            トースト追加 (Good)
           </Button>
         </div>
 
