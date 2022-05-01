@@ -1,35 +1,35 @@
 import { useEffect, useRef, useState } from "react"
 import { Button, Card, Container } from "react-bootstrap"
-import { GlobalToast } from "./GlobalToast"
+import { GlobalToast, ToastMessage } from "./GlobalToast"
 
 export function App() {
   const [play, setPlay] = useState(false)
 
+  const [messages, setMessages] = useState<ToastMessage[]>([
+    {
+      id: 1,
+      message: "type=undefined",
+    },
+    {
+      id: 2,
+      type: "warning",
+      message: "type=warning",
+    },
+    {
+      id: 3,
+      type: "danger",
+      message: "type=danger",
+    },
+    {
+      id: 4,
+      type: "success",
+      message: "type=success",
+    },
+  ])
+
   return (
     <Container fluid="xxl">
-      <GlobalToast
-        messages={[
-          {
-            id: 1,
-            message: "type=undefined",
-          },
-          {
-            id: 2,
-            type: "warning",
-            message: "type=warning",
-          },
-          {
-            id: 3,
-            type: "danger",
-            message: "type=danger",
-          },
-          {
-            id: 4,
-            type: "success",
-            message: "type=success",
-          },
-        ]}
-      />
+      <GlobalToast messages={messages} setMessages={setMessages} />
 
       <Card>
         <Video play={play} />
