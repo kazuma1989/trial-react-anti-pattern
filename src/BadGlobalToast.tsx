@@ -3,15 +3,15 @@ import { useEffect } from "react"
 import { Toast, ToastContainer } from "react-bootstrap"
 
 interface Props {
-  messages?: ToastMessage[]
+  messages?: BadToastMessage[]
   // useStateの戻り値の型をそのまま使っているが、
   // setMessagesの全権を握らせるくらいなら、GlobalToast自身のステートとして持てばいいのに。
   // トーストをクリックしても消すし、外の都合でも消せるように（トーストを無視して次の処理を始めたというような）という
   // 要求からこの歪な形が生まれたのであろう。
-  setMessages?: React.Dispatch<React.SetStateAction<ToastMessage[]>>
+  setMessages?: React.Dispatch<React.SetStateAction<BadToastMessage[]>>
 }
 
-export interface ToastMessage {
+export interface BadToastMessage {
   id: number | string
   type?: "success" | "warning" | "danger"
   message: string
@@ -21,7 +21,7 @@ export interface ToastMessage {
   show?: boolean
 }
 
-export function GlobalToast({ messages, setMessages }: Props) {
+export function BadGlobalToast({ messages, setMessages }: Props) {
   useEffect(() => {
     // mutateはしてはいけない！
     messages?.forEach((message) => {

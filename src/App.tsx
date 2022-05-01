@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react"
 import { Button, Card, Container } from "react-bootstrap"
-import { GlobalToast, ToastMessage } from "./GlobalToast"
+import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
 
 export function App() {
   const [play, setPlay] = useState(false)
 
-  const [messages, setMessages] = useState<ToastMessage[]>([
+  const [messages, setMessages] = useState<BadToastMessage[]>([
     {
       id: 1,
       message: "type=undefined",
@@ -29,7 +29,7 @@ export function App() {
 
   return (
     <Container fluid="xxl">
-      <GlobalToast messages={messages} setMessages={setMessages} />
+      <BadGlobalToast messages={messages} setMessages={setMessages} />
 
       <Card>
         <Video play={play} />
