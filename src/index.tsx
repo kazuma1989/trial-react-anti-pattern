@@ -1,10 +1,9 @@
+import "bootstrap/dist/css/bootstrap.min.css"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { SWRConfig } from "swr"
 import { Router } from "wouter"
 import { App } from "./App"
-import "./color.css"
-import "./global.css"
 
 createRoot(globalThis.document.getElementById("root")!).render(
   <StrictMode>

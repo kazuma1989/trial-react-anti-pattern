@@ -1,32 +1,31 @@
-import { css } from "@emotion/css"
 import { useEffect, useRef, useState } from "react"
-
-const COLOR = "blue"
+import { Button, Card, Container } from "react-bootstrap"
 
 export function App() {
   const [play, setPlay] = useState(false)
 
   return (
-    <div
-      className={css`
-        color: ${COLOR};
-      `}
-    >
-      <h1>Hello</h1>
+    <Container fluid="xxl">
+      <Card>
+        <Video play={play} />
 
-      <Video play={play} />
+        <Card.Body>
+          <Card.Title>Card Title</Card.Title>
+          <Card.Text>
+            Some quick example text to build on the card title and make up the
+          </Card.Text>
 
-      <div>
-        <button
-          type="button"
-          onClick={() => {
-            setPlay((v) => !v)
-          }}
-        >
-          {play ? "再生中" : "停止中"}
-        </button>
-      </div>
-    </div>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setPlay((v) => !v)
+            }}
+          >
+            {play ? "再生中" : "停止中"}
+          </Button>
+        </Card.Body>
+      </Card>
+    </Container>
   )
 }
 
