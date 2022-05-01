@@ -23,8 +23,8 @@ export interface BadToastMessage {
 
 export function BadGlobalToast({ messages, setMessages }: Props) {
   useEffect(() => {
-    // mutateはしてはいけない！
     messages?.forEach((message) => {
+      // mutateはしてはいけない！
       message.show = true
     })
 
@@ -68,7 +68,7 @@ export function BadGlobalToast({ messages, setMessages }: Props) {
             bg={type}
             onClose={() => {
               setMessages?.(
-                messages?.map((message) => {
+                messages.map((message) => {
                   if (message.id === id) {
                     // mutateしてはいけない！
                     // setMessagesとArray.mapとmutateの組み合わせは意味がわからないが、

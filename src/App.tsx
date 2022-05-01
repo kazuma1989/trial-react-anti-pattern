@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Button, Card, Container } from "react-bootstrap"
+import { Button, Card, Container, Stack } from "react-bootstrap"
 import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
 
 export function App() {
@@ -31,25 +31,43 @@ export function App() {
     <Container fluid="xxl">
       <BadGlobalToast messages={messages} setMessages={setMessages} />
 
-      <Card>
-        <Video play={play} />
-
-        <Card.Body>
-          <Card.Title>Card Title</Card.Title>
-          <Card.Text>
-            Some quick example text to build on the card title and make up the
-          </Card.Text>
-
+      <Stack gap={3}>
+        <div>
           <Button
-            variant="primary"
             onClick={() => {
-              setPlay((v) => !v)
+              setMessages([
+                {
+                  id: Date.now(),
+                  message: "Hello",
+                },
+                ...messages,
+              ])
             }}
           >
-            {play ? "再生中" : "停止中"}
+            トースト追加
           </Button>
-        </Card.Body>
-      </Card>
+        </div>
+
+        <Card>
+          <Video play={play} />
+
+          <Card.Body>
+            <Card.Title>Card Title</Card.Title>
+            <Card.Text>
+              Some quick example text to build on the card title and make up the
+            </Card.Text>
+
+            <Button
+              variant="primary"
+              onClick={() => {
+                setPlay((v) => !v)
+              }}
+            >
+              {play ? "再生中" : "停止中"}
+            </Button>
+          </Card.Body>
+        </Card>
+      </Stack>
     </Container>
   )
 }
