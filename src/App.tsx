@@ -3,9 +3,11 @@ import { Button, Card, Container, Stack } from "react-bootstrap"
 import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
 import { BadVideo } from "./BadVideo"
 import { GoodGlobalToast, ToastRef } from "./GoodGlobalToast"
+import { GoodVideo, VideoRef } from "./GoodVideo"
 
 export function App() {
-  const [play, setPlay] = useState(false)
+  const [badPlay, setBadPlay] = useState(false)
+  const [goodPlay, setGoodPlay] = useState(false)
 
   const [messages, setMessages] = useState<BadToastMessage[]>([
     {
@@ -30,6 +32,8 @@ export function App() {
   ])
 
   const toast$ = useRef<ToastRef>()
+
+  const video$ = useRef<VideoRef>()
 
   return (
     <Container fluid="xxl">
@@ -67,12 +71,12 @@ export function App() {
 
         <Card>
           <BadVideo
-            play={play}
+            play={badPlay}
             src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4"
           />
 
           <Card.Body>
-            <Card.Title>Card Title</Card.Title>
+            <Card.Title>Bad Video</Card.Title>
             <Card.Text>
               Some quick example text to build on the card title and make up the
             </Card.Text>
@@ -80,10 +84,51 @@ export function App() {
             <Button
               variant="primary"
               onClick={() => {
-                setPlay((v) => !v)
+                setBadPlay((v) => !v)
               }}
             >
-              {play ? "再生中" : "停止中"}
+              {badPlay ? (
+                <i className="bi bi-pause-fill"></i>
+              ) : (
+                <i className="bi bi-play-fill"></i>
+              )}
+            </Button>
+          </Card.Body>
+        </Card>
+
+        <Card>
+          <GoodVideo
+            methodRef={video$}
+            src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4"
+            onPlay={() => {
+              setGoodPlay(true)
+            }}
+            onPause={() => {
+              setGoodPlay(false)
+            }}
+          />
+
+          <Card.Body>
+            <Card.Title>Good Video</Card.Title>
+            <Card.Text>
+              Some quick example text to build on the card title and make up the
+            </Card.Text>
+
+            <Button
+              variant="primary"
+              onClick={() => {
+                if (goodPlay) {
+                  video$.current?.pause()
+                } else {
+                  video$.current?.play()
+                }
+              }}
+            >
+              {goodPlay ? (
+                <i className="bi bi-pause-fill"></i>
+              ) : (
+                <i className="bi bi-play-fill"></i>
+              )}
             </Button>
           </Card.Body>
         </Card>
