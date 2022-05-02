@@ -1,13 +1,11 @@
 import polka from "polka"
+import getUser from "./routes/get-user.js"
 
 const { PORT = 5000 } = process.env
 
 polka()
   .use(one, two)
-  .get("/users/:id", (req, res) => {
-    console.log(`~> Hello, ${req.hello}`)
-    res.end(`User: ${req.params.id}`)
-  })
+  .add(getUser.method, getUser.pattern, getUser.handler)
   .listen(PORT, (err) => {
     if (err) throw err
     console.log(`> Running on localhost:${PORT}`)
