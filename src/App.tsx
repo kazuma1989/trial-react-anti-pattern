@@ -1,5 +1,10 @@
+import { LoadingModalRefProvider } from "./GoodGlobalLoadingModal"
 import { Page1 } from "./Page1"
 
 export function App() {
-  return <Page1 />
+  return (
+    <LoadingModalRefProvider>
+      <Page1 />
+    </LoadingModalRefProvider>
+  )
 }

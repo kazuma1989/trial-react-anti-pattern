@@ -3,6 +3,7 @@ import { Button, Card, Container, Spinner, Stack } from "react-bootstrap"
 import { BadGlobalLoadingModal } from "./BadGlobalLoadingModal"
 import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
 import { BadVideo } from "./BadVideo"
+import { GoodGlobalLoadingModal } from "./GoodGlobalLoadingModal"
 import { GoodGlobalToast, ToastRef } from "./GoodGlobalToast"
 import { GoodVideo, VideoRef } from "./GoodVideo"
 import { useAPI } from "./useAPI"
@@ -52,6 +53,8 @@ export function Page1() {
   return (
     <Container fluid="xxl">
       <BadGlobalLoadingModal />
+
+      <GoodGlobalLoadingModal />
 
       <BadGlobalToast messages={messages} setMessages={setMessages} />
 
