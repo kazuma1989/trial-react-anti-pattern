@@ -4,8 +4,11 @@ import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
 import { BadVideo } from "./BadVideo"
 import { GoodGlobalToast, ToastRef } from "./GoodGlobalToast"
 import { GoodVideo, VideoRef } from "./GoodVideo"
+import { useAPI } from "./useAPI"
 
 export function Page1() {
+  const data = useAPI("GET /users/:id", { id: "John Doe" })
+
   const [badPlay, setBadPlay] = useState(false)
   const [goodPlay, setGoodPlay] = useState(false)
 
@@ -42,6 +45,10 @@ export function Page1() {
       <GoodGlobalToast methodRef={toast$} />
 
       <Stack gap={3}>
+        <pre>
+          <code>{JSON.stringify(data)}</code>
+        </pre>
+
         <div>
           <Button
             onClick={() => {
