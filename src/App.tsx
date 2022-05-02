@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { Button, Card, Container, Stack } from "react-bootstrap"
 import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
+import { BadVideo } from "./BadVideo"
 import { GoodGlobalToast, ToastRef } from "./GoodGlobalToast"
 
 export function App() {
@@ -65,7 +66,10 @@ export function App() {
         </div>
 
         <Card>
-          <Video play={play} />
+          <BadVideo
+            play={play}
+            src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4"
+          />
 
           <Card.Body>
             <Card.Title>Card Title</Card.Title>
@@ -85,24 +89,5 @@ export function App() {
         </Card>
       </Stack>
     </Container>
-  )
-}
-
-function Video({ play }: { play?: boolean }) {
-  const video$ = useRef<HTMLVideoElement>(null)
-
-  useEffect(() => {
-    if (play) {
-      video$.current?.play()
-    } else {
-      video$.current?.pause()
-    }
-  }, [play])
-
-  return (
-    <video
-      ref={video$}
-      src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4"
-    />
   )
 }
