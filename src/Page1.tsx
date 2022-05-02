@@ -4,7 +4,7 @@ import { BadGlobalLoadingModal } from "./BadGlobalLoadingModal"
 import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
 import { BadVideo } from "./BadVideo"
 import { GoodGlobalLoadingModal } from "./GoodGlobalLoadingModal"
-import { GoodGlobalToast, ToastRef } from "./GoodGlobalToast"
+import { GoodGlobalToast, useToastRef } from "./GoodGlobalToast"
 import { GoodVideo, VideoRef } from "./GoodVideo"
 import { useAPI } from "./useAPI"
 
@@ -46,7 +46,7 @@ export function Page1() {
     },
   ])
 
-  const toast$ = useRef<ToastRef>()
+  const toast$ = useToastRef()
 
   const video$ = useRef<VideoRef>()
 
@@ -58,7 +58,7 @@ export function Page1() {
 
       <BadGlobalToast messages={messages} setMessages={setMessages} />
 
-      <GoodGlobalToast methodRef={toast$} />
+      <GoodGlobalToast />
 
       <Stack gap={3} className="py-3">
         {data === "loading" ? (

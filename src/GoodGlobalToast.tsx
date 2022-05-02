@@ -1,26 +1,14 @@
 import { cx } from "@emotion/css"
-import { useImperativeHandle, useState } from "react"
+import {
+  createContext,
+  useContext,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react"
 import { Toast, ToastContainer } from "react-bootstrap"
 
-interface Props {
-  methodRef?: React.MutableRefObject<ToastRef | undefined>
-}
-
-export interface ToastRef {
-  notify(message: GoodToastMessage): void
-}
-
-interface GoodToastMessage {
-  type?: "success" | "warning" | "danger"
-  message: string
-}
-
-interface InnerToastMessage extends GoodToastMessage {
-  id: number
-  show: boolean
-}
-
-export function GoodGlobalToast({ methodRef }: Props) {
+export function GoodGlobalToast() {
   const [messages, setMessages] = useState<InnerToastMessage[]>([])
 
   const hideMessage = (id: number) => {
@@ -42,7 +30,8 @@ export function GoodGlobalToast({ methodRef }: Props) {
     }, 1_000)
   }
 
-  useImperativeHandle(methodRef, () => ({
+  const ref = useToastRef()
+  useImperativeHandle(ref, () => ({
     notify(message) {
       const id = Date.now()
 
@@ -108,4 +97,41 @@ export function GoodGlobalToast({ methodRef }: Props) {
       })}
     </ToastContainer>
   )
+}
+
+const context = createContext<
+  React.MutableRefObject<ToastRef | undefined> | undefined
+>(undefined)
+
+interface ToastRef {
+  notify(message: GoodToastMessage): void
+}
+
+interface GoodToastMessage {
+  type?: "success" | "warning" | "danger"
+  message: string
+}
+
+interface InnerToastMessage extends GoodToastMessage {
+  id: number
+  show: boolean
+}
+
+export function useToastRef(): React.MutableRefObject<ToastRef | undefined> {
+  const ref = useContext(context)
+  if (!ref) {
+    throw new Error("ToastRefProviderで囲み忘れていませんか？")
+  }
+
+  return ref
+}
+
+interface ToastRefProviderProps {
+  children?: React.ReactNode
+}
+
+export function ToastRefProvider({ children }: ToastRefProviderProps) {
+  const toast$ = useRef<ToastRef>()
+
+  return <context.Provider value={toast$}>{children}</context.Provider>
 }

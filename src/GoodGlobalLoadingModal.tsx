@@ -8,11 +8,6 @@ import {
 } from "react"
 import { Modal, Spinner } from "react-bootstrap"
 
-export interface LoadingModalRef {
-  start(): void
-  finish(): void
-}
-
 export function GoodGlobalLoadingModal() {
   const [loadingCount, setLoadingCount] = useState(0)
 
@@ -45,6 +40,11 @@ export function GoodGlobalLoadingModal() {
 const context = createContext<
   React.MutableRefObject<LoadingModalRef | undefined> | undefined
 >(undefined)
+
+interface LoadingModalRef {
+  start(): void
+  finish(): void
+}
 
 export function useLoadingModalRef(): React.MutableRefObject<
   LoadingModalRef | undefined
