@@ -6,6 +6,10 @@ export default defineRoute({
   handler: (req, res) => {
     console.log(`~> Hello, ${req.hello}`)
 
-    res.end(`User: ${req.params.id}`)
+    res.end(
+      JSON.stringify({
+        user: req.params.id,
+      })
+    )
   },
 })
