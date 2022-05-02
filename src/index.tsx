@@ -14,7 +14,6 @@ createRoot(globalThis.document.getElementById("root")!).render(
         revalidateOnReconnect: false,
         shouldRetryOnError: false,
         dedupingInterval: 86400_000,
-        suspense: true,
       }}
     >
       <Router base={import.meta.env.BASE_URL.replace(/\/+$/, "")}>
