@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import { Button, Card, Container, Stack } from "react-bootstrap"
+import { Button, Card, Container, Spinner, Stack } from "react-bootstrap"
 import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
 import { BadVideo } from "./BadVideo"
 import { GoodGlobalToast, ToastRef } from "./GoodGlobalToast"
@@ -45,9 +45,15 @@ export function Page1() {
       <GoodGlobalToast methodRef={toast$} />
 
       <Stack gap={3}>
-        <pre>
-          <code>{JSON.stringify(data)}</code>
-        </pre>
+        {data === "loading" ? (
+          <Spinner animation="border" />
+        ) : data === "error" ? (
+          <div>ERROR</div>
+        ) : (
+          <pre>
+            <code>{JSON.stringify(data)}</code>
+          </pre>
+        )}
 
         <div>
           <Button
