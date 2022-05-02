@@ -1,5 +1,6 @@
 import * as fs from "node:fs/promises"
 import * as path from "node:path"
+import * as timers from "node:timers/promises"
 import * as url from "node:url"
 import polka from "polka"
 
@@ -24,11 +25,22 @@ routes
   .reduce(
     (server, { method, pattern, handler }) =>
       server.add(method, pattern, handler),
-    polka()
+
+    polka({
+      onNoMatch(req, res) {
+        res.statusCode = 404
+        res.end(JSON.stringify({ error: "Not Found" }))
+      },
+    })
   )
 
   .use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*")
+    next()
+  })
+
+  .use(async (req, res, next) => {
+    await timers.setTimeout(Math.sqrt(Math.random()) * 1_000)
     next()
   })
 
