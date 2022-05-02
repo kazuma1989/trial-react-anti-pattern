@@ -1,5 +1,6 @@
 import { useRef, useState } from "react"
 import { Button, Card, Container, Spinner, Stack } from "react-bootstrap"
+import { BadGlobalLoadingModal } from "./BadGlobalLoadingModal"
 import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
 import { BadVideo } from "./BadVideo"
 import { GoodGlobalToast, ToastRef } from "./GoodGlobalToast"
@@ -8,6 +9,16 @@ import { useAPI } from "./useAPI"
 
 export function Page1() {
   const data = useAPI("GET /users/:id", { id: "John Doe" })
+
+  const data2 = useAPI(
+    "GET /users/:id",
+    data == "loading"
+      ? null
+      : {
+          id: "foo",
+        }
+  )
+  useAPI("GET /users/:id", data2 == "loading" ? null : { id: "bar" })
 
   const [badPlay, setBadPlay] = useState(false)
   const [goodPlay, setGoodPlay] = useState(false)
@@ -40,6 +51,8 @@ export function Page1() {
 
   return (
     <Container fluid="xxl">
+      <BadGlobalLoadingModal />
+
       <BadGlobalToast messages={messages} setMessages={setMessages} />
 
       <GoodGlobalToast methodRef={toast$} />
