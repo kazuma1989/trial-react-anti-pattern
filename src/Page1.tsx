@@ -44,7 +44,7 @@ export function Page1() {
 
       <GoodGlobalToast methodRef={toast$} />
 
-      <Stack gap={3}>
+      <Stack gap={3} className="py-3">
         {data === "loading" ? (
           <Spinner animation="border" />
         ) : data === "error" ? (
