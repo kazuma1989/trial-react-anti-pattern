@@ -3,12 +3,12 @@ import * as http from "node:http"
 export interface Route {
   method: HTTPMethod
   pattern: string | RegExp
-  handler: Handler
+  handler: HandlerFunc
 }
 
 type HTTPMethod = "OPTIONS" | "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 
-interface Handler {
+interface HandlerFunc {
   (req: Request, res: Response): void
 }
 
