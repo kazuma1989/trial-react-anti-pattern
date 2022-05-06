@@ -1,5 +1,5 @@
 import useSWR from "swr"
-import { useLoadingModalRef } from "./GoodGlobalLoadingModal"
+import { useLoadingModal } from "./GoodGlobalLoadingModal"
 
 export function useAPI(
   route: "GET /users/:id",
@@ -20,7 +20,7 @@ export function useAPI(
   route: `GET /${string}`,
   params?: any
 ): [data: unknown | "loading" | "error", refresh: () => void] {
-  const modal$ = useLoadingModalRef()
+  const modal = useLoadingModal()
 
   const [, pathTemplate] = route.split(" ") as ["GET", `/${string}`]
   const path = pathTemplate.replace(
@@ -33,9 +33,9 @@ export function useAPI(
     error: panic,
     mutate,
   } = useSWR(params === null ? null : "http://localhost:5000" + path, (url) =>
-    fetchWrapper(modal$)(url).then<
-      [ok: boolean, status: number, json: unknown]
-    >(async (r) => [r.ok, r.status, await r.json()])
+    fetchWrapper(modal)(url).then<[ok: boolean, status: number, json: unknown]>(
+      async (r) => [r.ok, r.status, await r.json()]
+    )
   )
   if (panic) {
     throw panic
@@ -57,14 +57,12 @@ export function useAPI(
   return [json, refresh]
 }
 
-function fetchWrapper(
-  modal$: ReturnType<typeof useLoadingModalRef>
-): typeof fetch {
+function fetchWrapper(modal: ReturnType<typeof useLoadingModal>): typeof fetch {
   return async (...args) => {
-    modal$.current?.start()
+    modal.start()
 
     const res = await fetch(...args).finally(() => {
-      modal$.current?.finish()
+      modal.finish()
     })
 
     return res

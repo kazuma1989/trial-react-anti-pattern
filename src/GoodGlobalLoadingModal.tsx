@@ -1,11 +1,5 @@
 import { css } from "@emotion/css"
-import {
-  createContext,
-  useContext,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react"
+import { createContext, useContext, useState } from "react"
 import { Modal, Spinner } from "react-bootstrap"
 
 interface LoadingModal {
@@ -13,11 +7,10 @@ interface LoadingModal {
   finish(): void
 }
 
-export function GoodGlobalLoadingModal() {
-  const [loadingCount, setLoadingCount] = useState(0)
+export function useLoadingModal(): LoadingModal {
+  const setLoadingCount = useContext(context)
 
-  const ref = useContext(context)
-  useImperativeHandle(ref, () => ({
+  return {
     start() {
       setLoadingCount((count) => count + 1)
     },
@@ -25,46 +18,37 @@ export function GoodGlobalLoadingModal() {
     finish() {
       setLoadingCount((count) => count - 1)
     },
-  }))
-
-  return (
-    <Modal
-      show={loadingCount >= 1}
-      centered
-      contentClassName={css`
-        background-color: transparent;
-        border: none;
-        align-items: center;
-      `}
-    >
-      <Spinner animation="border" />
-    </Modal>
-  )
-}
-
-const context = createContext<
-  React.MutableRefObject<LoadingModal | undefined> | undefined
->(undefined)
-
-export function useLoadingModalRef(): React.MutableRefObject<
-  LoadingModal | undefined
-> {
-  const ref = useContext(context)
-  if (!ref) {
-    throw new Error("LoadingModalRefProviderで囲み忘れていませんか？")
   }
-
-  return ref
 }
 
-interface LoadingModalRefProviderProps {
+interface LoadingModalContainerProps {
   children?: React.ReactNode
 }
 
-export function LoadingModalRefProvider({
+export function LoadingModalContainer({
   children,
-}: LoadingModalRefProviderProps) {
-  const modal$ = useRef<LoadingModal>()
+}: LoadingModalContainerProps) {
+  const [loadingCount, setLoadingCount] = useState(0)
 
-  return <context.Provider value={modal$}>{children}</context.Provider>
+  return (
+    <context.Provider value={setLoadingCount}>
+      <Modal
+        show={loadingCount >= 1}
+        centered
+        contentClassName={css`
+          background-color: transparent;
+          border: none;
+          align-items: center;
+        `}
+      >
+        <Spinner animation="border" />
+      </Modal>
+
+      {children}
+    </context.Provider>
+  )
 }
+
+const context = createContext<React.Dispatch<React.SetStateAction<number>>>(
+  () => {}
+)
