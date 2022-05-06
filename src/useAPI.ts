@@ -6,17 +6,20 @@ export function useAPI(
   params: {
     id: string
   } | null
-):
-  | {
-      user: string
-    }
-  | "loading"
-  | "error"
+): [
+  data:
+    | {
+        user: string
+      }
+    | "loading"
+    | "error",
+  refresh: () => void
+]
 
 export function useAPI(
   route: `GET /${string}`,
   params?: any
-): unknown | "loading" | "error" {
+): [data: unknown | "loading" | "error", refresh: () => void] {
   const modal$ = useLoadingModalRef()
 
   const [, pathTemplate] = route.split(" ") as ["GET", `/${string}`]
@@ -25,27 +28,33 @@ export function useAPI(
     (_, key): string => params?.[key as keyof typeof params] ?? ""
   )
 
-  const { data, error: panic } = useSWR(
-    params === null ? null : "http://localhost:5000" + path,
-    (url) =>
-      fetchWrapper(modal$)(url).then<
-        [ok: boolean, status: number, json: unknown]
-      >(async (r) => [r.ok, r.status, await r.json()])
+  const {
+    data,
+    error: panic,
+    mutate,
+  } = useSWR(params === null ? null : "http://localhost:5000" + path, (url) =>
+    fetchWrapper(modal$)(url).then<
+      [ok: boolean, status: number, json: unknown]
+    >(async (r) => [r.ok, r.status, await r.json()])
   )
   if (panic) {
     throw panic
   }
 
+  const refresh = () => {
+    mutate()
+  }
+
   if (data === undefined) {
-    return "loading"
+    return ["loading", refresh]
   }
 
-  const [ok, status, json] = data
+  const [ok, , json] = data
   if (!ok) {
-    return "error"
+    return ["error", refresh]
   }
 
-  return json
+  return [json, refresh]
 }
 
 function fetchWrapper(

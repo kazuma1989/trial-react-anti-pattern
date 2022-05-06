@@ -9,9 +9,9 @@ import { GoodVideo, VideoRef } from "./GoodVideo"
 import { useAPI } from "./useAPI"
 
 export function Page1() {
-  const data = useAPI("GET /users/:id", { id: "John Doe" })
+  const [data, refresh] = useAPI("GET /users/:id", { id: "John Doe" })
 
-  const data2 = useAPI(
+  const [data2] = useAPI(
     "GET /users/:id",
     data == "loading"
       ? null
@@ -61,15 +61,21 @@ export function Page1() {
       <GoodGlobalToast />
 
       <Stack gap={3} className="py-3">
-        {data === "loading" ? (
-          <Spinner animation="border" />
-        ) : data === "error" ? (
-          <div>ERROR</div>
-        ) : (
-          <pre>
-            <code>{JSON.stringify(data)}</code>
-          </pre>
-        )}
+        <div>
+          {data === "loading" ? (
+            <div>
+              <Spinner animation="border" />
+            </div>
+          ) : data === "error" ? (
+            <div>ERROR</div>
+          ) : (
+            <pre>
+              <code>{JSON.stringify(data)}</code>
+            </pre>
+          )}
+
+          <Button onClick={refresh}>リフレッシュ</Button>
+        </div>
 
         <div>
           <Button
