@@ -8,10 +8,15 @@ import {
 } from "react"
 import { Modal, Spinner } from "react-bootstrap"
 
+interface LoadingModal {
+  start(): void
+  finish(): void
+}
+
 export function GoodGlobalLoadingModal() {
   const [loadingCount, setLoadingCount] = useState(0)
 
-  const ref = useLoadingModalRef()
+  const ref = useContext(context)
   useImperativeHandle(ref, () => ({
     start() {
       setLoadingCount((count) => count + 1)
@@ -38,16 +43,11 @@ export function GoodGlobalLoadingModal() {
 }
 
 const context = createContext<
-  React.MutableRefObject<LoadingModalRef | undefined> | undefined
+  React.MutableRefObject<LoadingModal | undefined> | undefined
 >(undefined)
 
-interface LoadingModalRef {
-  start(): void
-  finish(): void
-}
-
 export function useLoadingModalRef(): React.MutableRefObject<
-  LoadingModalRef | undefined
+  LoadingModal | undefined
 > {
   const ref = useContext(context)
   if (!ref) {
@@ -64,7 +64,7 @@ interface LoadingModalRefProviderProps {
 export function LoadingModalRefProvider({
   children,
 }: LoadingModalRefProviderProps) {
-  const modal$ = useRef<LoadingModalRef>()
+  const modal$ = useRef<LoadingModal>()
 
   return <context.Provider value={modal$}>{children}</context.Provider>
 }

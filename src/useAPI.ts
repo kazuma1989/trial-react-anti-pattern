@@ -49,13 +49,13 @@ export function useAPI(
 }
 
 function fetchWrapper(
-  ref: ReturnType<typeof useLoadingModalRef>
+  modal$: ReturnType<typeof useLoadingModalRef>
 ): typeof fetch {
   return async (...args) => {
-    ref.current?.start()
+    modal$.current?.start()
 
     const res = await fetch(...args).finally(() => {
-      ref.current?.finish()
+      modal$.current?.finish()
     })
 
     return res
