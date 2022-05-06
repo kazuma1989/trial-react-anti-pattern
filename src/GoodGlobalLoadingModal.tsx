@@ -34,15 +34,19 @@ export function LoadingModalContainer({
     <context.Provider value={setLoadingCount}>
       <Modal
         show={loadingCount >= 1}
-        centered
-        contentClassName={css`
-          background-color: transparent;
-          border: none;
-          align-items: center;
-        `}
-      >
-        <Spinner animation="border" />
-      </Modal>
+        dialogAs={() => (
+          <div
+            className={css`
+              height: 100%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            `}
+          >
+            <Spinner animation="border" />
+          </div>
+        )}
+      />
 
       {children}
     </context.Provider>
