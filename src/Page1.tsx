@@ -55,7 +55,7 @@ export function Page1() {
 
       <BadGlobalToast messages={messages} setMessages={setMessages} />
 
-      <GoodGlobalToast methodRef={toast$} />
+      <GoodGlobalToast toastRef={toast$} />
 
       <Stack gap={3} className="py-3">
         <div>

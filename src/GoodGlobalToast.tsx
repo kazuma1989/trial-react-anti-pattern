@@ -17,10 +17,10 @@ interface InnerToastMessage extends GoodToastMessage {
 }
 
 interface GoodGlobalToastProps {
-  methodRef?: React.MutableRefObject<Toast | undefined>
+  toastRef?: React.MutableRefObject<Toast | undefined>
 }
 
-export function GoodGlobalToast({ methodRef }: GoodGlobalToastProps) {
+export function GoodGlobalToast({ toastRef }: GoodGlobalToastProps) {
   const [messages, setMessages] = useState<InnerToastMessage[]>([])
 
   const hideMessage = (id: number) => {
@@ -42,7 +42,7 @@ export function GoodGlobalToast({ methodRef }: GoodGlobalToastProps) {
     }, 1_000)
   }
 
-  useImperativeHandle(methodRef, () => ({
+  useImperativeHandle(toastRef, () => ({
     notify(message) {
       const id = Date.now()
 
