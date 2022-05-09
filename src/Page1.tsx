@@ -1,10 +1,10 @@
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { Button, Card, Container, Spinner, Stack } from "react-bootstrap"
 import { BadGlobalLoadingModal } from "./BadGlobalLoadingModal"
 import { BadGlobalToast, BadToastMessage } from "./BadGlobalToast"
 import { BadVideo } from "./BadVideo"
 import { GoodGlobalToast, useToastRef } from "./GoodGlobalToast"
-import { GoodVideo, VideoRef } from "./GoodVideo"
+import { GoodVideo, useVideoRef } from "./GoodVideo"
 import { useAPI } from "./useAPI"
 
 export function Page1() {
@@ -47,7 +47,7 @@ export function Page1() {
 
   const toast$ = useToastRef()
 
-  const video$ = useRef<VideoRef>()
+  const video$ = useVideoRef()
 
   return (
     <Container fluid="xxl">

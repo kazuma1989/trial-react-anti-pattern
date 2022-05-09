@@ -1,17 +1,17 @@
 import { css } from "@emotion/css"
 import { useImperativeHandle, useRef, useState } from "react"
 
+interface VideoInstance {
+  playing: boolean
+  play(): void
+  pause(): void
+}
+
 interface Props {
   src?: string
   onPlay?(): void
   onPause?(): void
-  videoRef?: React.MutableRefObject<VideoRef | undefined>
-}
-
-export interface VideoRef {
-  playing: boolean
-  play(): void
-  pause(): void
+  videoRef?: React.MutableRefObject<VideoInstance | undefined>
 }
 
 export function GoodVideo({ src, videoRef, onPlay, onPause }: Props) {
@@ -119,4 +119,10 @@ function VideOverlay({ play, onClick, children }: VideoOverlayProps) {
       </button>
     </div>
   )
+}
+
+export function useVideoRef(): React.MutableRefObject<
+  VideoInstance | undefined
+> {
+  return useRef<VideoInstance>()
 }

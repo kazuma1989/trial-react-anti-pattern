@@ -2,22 +2,22 @@ import { cx } from "@emotion/css"
 import { useImperativeHandle, useRef, useState } from "react"
 import { Toast, ToastContainer } from "react-bootstrap"
 
-interface Toast {
-  notify(message: GoodToastMessage): void
+interface ToastInstance {
+  notify(message: ToastMessage): void
 }
 
-interface GoodToastMessage {
+interface ToastMessage {
   type?: "success" | "warning" | "danger"
   message: string
 }
 
-interface InnerToastMessage extends GoodToastMessage {
+interface InnerToastMessage extends ToastMessage {
   id: number
   show: boolean
 }
 
 interface GoodGlobalToastProps {
-  toastRef?: React.MutableRefObject<Toast | undefined>
+  toastRef?: React.MutableRefObject<ToastInstance | undefined>
 }
 
 export function GoodGlobalToast({ toastRef }: GoodGlobalToastProps) {
@@ -110,6 +110,8 @@ export function GoodGlobalToast({ toastRef }: GoodGlobalToastProps) {
   )
 }
 
-export function useToastRef(): React.MutableRefObject<Toast | undefined> {
-  return useRef<Toast>()
+export function useToastRef(): React.MutableRefObject<
+  ToastInstance | undefined
+> {
+  return useRef<ToastInstance>()
 }
