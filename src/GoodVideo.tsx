@@ -5,21 +5,26 @@ interface Props {
   src?: string
   onPlay?(): void
   onPause?(): void
-  methodRef?: React.MutableRefObject<VideoRef | undefined>
+  videoRef?: React.MutableRefObject<VideoRef | undefined>
 }
 
 export interface VideoRef {
+  playing: boolean
   play(): void
   pause(): void
 }
 
-export function GoodVideo({ src, methodRef, onPlay, onPause }: Props) {
+export function GoodVideo({ src, videoRef, onPlay, onPause }: Props) {
   const [play, setPlay] = useState(false)
 
   const video$ = useRef<HTMLVideoElement>(null)
-  const videoPlaying$ = useRef(false)
+  const playing$ = useRef(false)
 
-  useImperativeHandle(methodRef, () => ({
+  useImperativeHandle(videoRef, () => ({
+    get playing(): boolean {
+      return playing$.current
+    },
+
     play() {
       video$.current?.play()
     },
@@ -33,13 +38,11 @@ export function GoodVideo({ src, methodRef, onPlay, onPause }: Props) {
     <VideOverlay
       play={play}
       onClick={() => {
-        if (videoPlaying$.current) {
+        if (playing$.current) {
           video$.current?.pause()
         } else {
           video$.current?.play()
         }
-
-        setPlay((v) => !v)
       }}
     >
       <video
@@ -47,13 +50,13 @@ export function GoodVideo({ src, methodRef, onPlay, onPause }: Props) {
         src={src}
         controls={false}
         onPlay={() => {
-          videoPlaying$.current = true
+          playing$.current = true
           setPlay(true)
 
           onPlay?.()
         }}
         onPause={() => {
-          videoPlaying$.current = false
+          playing$.current = false
           setPlay(false)
 
           onPause?.()

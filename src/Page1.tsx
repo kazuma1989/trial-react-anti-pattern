@@ -130,7 +130,7 @@ export function Page1() {
 
         <Card>
           <GoodVideo
-            methodRef={video$}
+            videoRef={video$}
             src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4"
             onPlay={() => {
               setGoodPlay(true)
@@ -149,7 +149,7 @@ export function Page1() {
             <Button
               variant="primary"
               onClick={() => {
-                if (goodPlay) {
+                if (video$.current?.playing) {
                   video$.current?.pause()
                 } else {
                   video$.current?.play()
