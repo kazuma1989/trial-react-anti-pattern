@@ -17,6 +17,12 @@ export function AllNav() {
       </Nav.Item>
 
       <Nav.Item>
+        <Link to="/3">
+          <Nav.Link>/3</Nav.Link>
+        </Link>
+      </Nav.Item>
+
+      <Nav.Item>
         <Link to="/foo/404">
           <Nav.Link>/foo/404</Nav.Link>
         </Link>
