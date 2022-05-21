@@ -6,23 +6,27 @@ export function useAPI(
   params: {
     id: string
   } | null
-): [
-  response:
-    | OKResponse<{
-        user: string
-      }>
-    | LoadingResponse
-    | ErrorResponse,
-  refresh: () => void
-]
+):
+  | OKResponse<{
+      user: string
+    }>
+  | LoadingResponse
+  | ErrorResponse
+
+export function useAPI(
+  route: "GET /always-404",
+  params?: null
+):
+  | OKResponse<{
+      nonsense: number
+    }>
+  | LoadingResponse
+  | ErrorResponse
 
 export function useAPI(
   route: `GET /${string}`,
   params?: any
-): [
-  response: OKResponse<unknown> | LoadingResponse | ErrorResponse,
-  refresh: () => void
-] {
+): OKResponse<unknown> | LoadingResponse | ErrorResponse {
   const modal = useLoadingModal()
 
   const [, pathTemplate] = route.split(" ") as ["GET", `/${string}`]
@@ -50,33 +54,19 @@ export function useAPI(
   }
 
   if (data === undefined) {
-    return [
-      {
-        status: "loading",
-        data: null,
-      },
-      refresh,
-    ]
+    return ["loading", null, refresh]
   }
 
   const [ok, , json] = data
   if (!ok) {
     return [
-      {
-        status: "error",
-        data: isErrorResponseData(json) ? json : { error: "Unknown Error" },
-      },
+      "error",
+      isErrorData(json) ? json : { error: "Unknown Error" },
       refresh,
     ]
   }
 
-  return [
-    {
-      status: "ok",
-      data: json,
-    },
-    refresh,
-  ]
+  return ["ok", json, refresh]
 }
 
 function fetchWrapper(modal: ReturnType<typeof useLoadingModal>): typeof fetch {
@@ -101,24 +91,17 @@ function fetchWrapper(modal: ReturnType<typeof useLoadingModal>): typeof fetch {
 //   return res
 // }
 
-interface OKResponse<T> {
-  status: "ok"
-  data: T
+type OKResponse<T> = [status: "ok", data: T, refresh: () => void]
+
+type LoadingResponse = [status: "loading", data: null, refresh: () => void]
+
+type ErrorResponse = [status: "error", data: ErrorData, refresh: () => void]
+
+interface ErrorData {
+  error: string
 }
 
-interface LoadingResponse {
-  status: "loading"
-  data: null
-}
-
-interface ErrorResponse {
-  status: "error"
-  data: {
-    error: string
-  }
-}
-
-function isErrorResponseData(data: unknown): data is ErrorResponse["data"] {
+function isErrorData(data: unknown): data is ErrorData {
   if (!data || typeof data !== "object") {
     return false
   }
