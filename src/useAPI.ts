@@ -7,22 +7,26 @@ export function useAPI(
     id: string
   } | null
 ): [
-  data:
-    | {
+  response:
+    | OKResponse<{
         user: string
-      }
-    | "loading"
-    | "error",
+      }>
+    | LoadingResponse
+    | ErrorResponse,
   refresh: () => void
 ]
 
 export function useAPI(
   route: `GET /${string}`,
   params?: any
-): [data: unknown | "loading" | "error", refresh: () => void] {
+): [
+  response: OKResponse<unknown> | LoadingResponse | ErrorResponse,
+  refresh: () => void
+] {
   const modal = useLoadingModal()
 
   const [, pathTemplate] = route.split(" ") as ["GET", `/${string}`]
+  // "/foo/:id/bar" + { id: "xxx" } -> "/foo/xxx/bar"
   const path = pathTemplate.replace(
     /:([0-9A-Za-z_-]+)/g,
     (_, key): string => params?.[key as keyof typeof params] ?? ""
@@ -46,15 +50,33 @@ export function useAPI(
   }
 
   if (data === undefined) {
-    return ["loading", refresh]
+    return [
+      {
+        status: "loading",
+        data: null,
+      },
+      refresh,
+    ]
   }
 
   const [ok, , json] = data
   if (!ok) {
-    return ["error", refresh]
+    return [
+      {
+        status: "error",
+        data: isErrorResponseData(json) ? json : { error: "Unknown Error" },
+      },
+      refresh,
+    ]
   }
 
-  return [json, refresh]
+  return [
+    {
+      status: "ok",
+      data: json,
+    },
+    refresh,
+  ]
 }
 
 function fetchWrapper(modal: ReturnType<typeof useLoadingModal>): typeof fetch {
@@ -78,3 +100,28 @@ function fetchWrapper(modal: ReturnType<typeof useLoadingModal>): typeof fetch {
 
 //   return res
 // }
+
+interface OKResponse<T> {
+  status: "ok"
+  data: T
+}
+
+interface LoadingResponse {
+  status: "loading"
+  data: null
+}
+
+interface ErrorResponse {
+  status: "error"
+  data: {
+    error: string
+  }
+}
+
+function isErrorResponseData(data: unknown): data is ErrorResponse["data"] {
+  if (!data || typeof data !== "object") {
+    return false
+  }
+
+  return "error" in data && typeof (data as any).error === "string"
+}

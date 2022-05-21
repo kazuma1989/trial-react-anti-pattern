@@ -8,17 +8,23 @@ import { GoodVideo, useVideoRef } from "./GoodVideo"
 import { useAPI } from "./useAPI"
 
 export function Page1() {
-  const [data, refresh] = useAPI("GET /users/:id", { id: "John Doe" })
+  const [resp, refresh] = useAPI("GET /users/:id", {
+    id: "John Doe",
+  })
 
-  const [data2] = useAPI(
+  const [resp2] = useAPI(
     "GET /users/:id",
-    data == "loading"
-      ? null
-      : {
-          id: "foo",
+    resp.status === "ok"
+      ? {
+          id: resp.data.user + "1",
         }
+      : null
   )
-  useAPI("GET /users/:id", data2 == "loading" ? null : { id: "bar" })
+
+  useAPI(
+    "GET /users/:id",
+    resp2.status === "ok" ? { id: resp2.data.user + "2" } : null
+  )
 
   const [badPlay, setBadPlay] = useState(false)
   const [goodPlay, setGoodPlay] = useState(false)
@@ -59,15 +65,15 @@ export function Page1() {
 
       <Stack gap={3} className="py-3">
         <div>
-          {data === "loading" ? (
+          {resp.status === "loading" ? (
             <div>
               <Spinner animation="border" />
             </div>
-          ) : data === "error" ? (
-            <div>ERROR</div>
+          ) : resp.status === "error" ? (
+            <div>ERROR {resp.data.error}</div>
           ) : (
             <pre>
-              <code>{JSON.stringify(data)}</code>
+              <code>{JSON.stringify(resp.data)}</code>
             </pre>
           )}
 
