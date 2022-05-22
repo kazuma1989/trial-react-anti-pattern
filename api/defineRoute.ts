@@ -1,16 +1,17 @@
+import { Route } from "./Route"
+
 /**
- * @typedef {import("./Route").Route} Route
- * @param {`${Route["method"]} /${string}`} route
- * @param {Route["handler"]} handler
- * @returns {Route}
  * @example
  * export default defineRoute("GET /users/:id", (req, res) => {
- *    res.statusCode = 200
- *    res.end(JSON.stringify({ thisIs: "OK" }))
+ *   res.statusCode = 200
+ *   res.end(JSON.stringify({ thisIs: "OK" }))
  * })
  */
-export function defineRoute(route, handler) {
-  const [method, pattern] = route.split(" ")
+export function defineRoute<P extends string>(
+  route: `${Route["method"]} ${P}`,
+  handler: Route<ExtractColonParams<P>>["handler"]
+): Route {
+  const [method, pattern] = route.split(" ") as [Route["method"], string]
 
   return {
     method,
@@ -18,3 +19,15 @@ export function defineRoute(route, handler) {
     handler,
   }
 }
+
+/**
+ * @example
+ * ExtractColonParams<"/foo/:bar"> == "bar"
+ * ExtractColonParams<"/foo/:bar/:baz"> == "bar" | "baz"
+ */
+type ExtractColonParams<Path extends string> =
+  Path extends `${string}:${infer AfterColon}`
+    ? AfterColon extends `${infer Key}/${infer Rest}`
+      ? Key | ExtractColonParams<Rest>
+      : AfterColon
+    : never

@@ -3,6 +3,7 @@ import * as path from "node:path"
 import * as timers from "node:timers/promises"
 import * as url from "node:url"
 import polka from "polka"
+import { Route } from "./Route"
 
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -10,21 +11,25 @@ const __dirname = path.dirname(__filename)
 const { PORT = 5000 } = process.env
 
 const routesDir = path.resolve(__dirname, "./routes/")
-const routes = await fs.readdir(routesDir).then((files) =>
-  Promise.all(
-    files.map((file) =>
-      import(path.resolve(routesDir, file)).then(
-        /** @returns {import("./Route").Route} */
-        (m) => m.default
+const routes = await fs
+  .readdir(routesDir)
+  .then((files) =>
+    Promise.all(
+      files.map((file) =>
+        import(path.resolve(routesDir, file)).then<Route>((m) => m.default)
       )
     )
   )
-)
 
 routes
   .reduce(
     (server, { method, pattern, handler }) =>
-      server.add(method, pattern, handler),
+      server.add(
+        method,
+        pattern,
+        // @ts-expect-error polkaの型定義とランタイムが噛み合っていない様子
+        handler
+      ),
 
     polka({
       onNoMatch(req, res) {
@@ -44,7 +49,7 @@ routes
     next()
   })
 
-  .listen(PORT, (err) => {
+  .listen(PORT, (err: unknown) => {
     if (err) {
       throw err
     }
