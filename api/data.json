@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "id": "John%20Doe",
+      "user": "John Doe"
+    },
+    {
+      "id": "Alice",
+      "user": "Alice"
+    }
+  ],
+  "__404": {
+    "error": "Not Found"
+  }
+}

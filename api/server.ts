@@ -3,6 +3,7 @@ import * as path from "node:path"
 import * as timers from "node:timers/promises"
 import * as url from "node:url"
 import polka from "polka"
+import { db } from "./db"
 import { Route } from "./Route"
 
 const __filename = url.fileURLToPath(import.meta.url)
@@ -21,7 +22,7 @@ const routes = await fs
     )
   )
 
-routes
+const server = routes
   .reduce(
     (server, { method, pattern, handler }) =>
       server.add(
@@ -34,7 +35,7 @@ routes
     polka({
       onNoMatch(req, res) {
         res.statusCode = 404
-        res.end(JSON.stringify({ error: "Not Found" }))
+        res.end(JSON.stringify(db.data.__404))
       },
     })
   )
@@ -49,10 +50,12 @@ routes
     next()
   })
 
-  .listen(PORT, (err: unknown) => {
-    if (err) {
-      throw err
-    }
+await db.read()
 
-    console.log(`> Running on localhost:${PORT}`)
-  })
+server.listen(PORT, (err: unknown) => {
+  if (err) {
+    throw err
+  }
+
+  console.log(`> Running on localhost:${PORT}`)
+})

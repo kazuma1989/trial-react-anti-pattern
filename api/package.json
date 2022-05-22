@@ -16,6 +16,7 @@
     "start": "tsx watch ./server.ts"
   },
   "dependencies": {
+    "lowdb": "3.0.x",
     "polka": "0.5.x",
     "tsx": "3.4.x"
   },
