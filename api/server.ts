@@ -45,6 +45,7 @@ const server = routes
       }),
 
     polka({
+      // 404 handler
       onNoMatch(req, res) {
         res.statusCode = 404
         res.end(
@@ -56,13 +57,24 @@ const server = routes
     })
   )
 
+  // CORS
   .use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Headers", "*")
+
+    // Preflight
+    if (req.method === "OPTIONS") {
+      res.end()
+      return
+    }
+
     next()
   })
 
+  // Dummy delay
   .use(async (req, res, next) => {
     await timers.setTimeout(Math.sqrt(Math.random()) * 1_000)
+
     next()
   })
 
