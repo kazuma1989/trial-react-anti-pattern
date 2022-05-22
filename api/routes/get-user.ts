@@ -1,4 +1,4 @@
-import { defineRoute } from "../defineRoute.js"
+import { defineRoute } from "../defineRoute"
 
 export default defineRoute("GET /users/:id", (req, res) => {
   console.log(`~> Hello, ${req.params.id}`)

@@ -13,10 +13,11 @@
   },
   "type": "module",
   "scripts": {
-    "start": "node ./server.js"
+    "start": "tsx watch ./server.ts"
   },
   "dependencies": {
-    "polka": "0.5.x"
+    "polka": "0.5.x",
+    "tsx": "3.4.x"
   },
   "devDependencies": {
     "@types/polka": "0.5.x"
