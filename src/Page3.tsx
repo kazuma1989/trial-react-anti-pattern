@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Container, Stack, Table } from "react-bootstrap"
+import { Button, Container, Stack, Table } from "react-bootstrap"
 
 export function Page3() {
   const [thumbnail, setImg] = useState("")
@@ -21,6 +21,24 @@ export function Page3() {
           />
 
           {thumbnail && <img src={thumbnail} alt="動画のサムネイル" />}
+        </div>
+
+        <div>
+          <Button
+            onClick={() => {
+              fetch("http://localhost:5000/users", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  user: "Bob",
+                }),
+              })
+            }}
+          >
+            POST /users
+          </Button>
         </div>
 
         <Table hover striped>
