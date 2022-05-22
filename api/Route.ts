@@ -9,7 +9,7 @@ export interface Route<ParamKeys extends string = string> {
 type HTTPMethod = "OPTIONS" | "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 
 interface HandlerFunc<ParamKeys extends string> {
-  (req: Request<ParamKeys>, res: Response): void
+  (req: Request<ParamKeys>, res: Response): void | PromiseLike<void>
 }
 
 interface Request<ParamKeys extends string> extends http.IncomingMessage {

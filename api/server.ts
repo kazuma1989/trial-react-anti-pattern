@@ -25,17 +25,33 @@ const routes = await fs
 const server = routes
   .reduce(
     (server, { method, pattern, handler }) =>
-      server.add(
-        method,
-        pattern,
-        // @ts-expect-error polkaの型定義とランタイムが噛み合っていない様子
-        handler
-      ),
+      server.add(method, pattern, async (req, res, next) => {
+        try {
+          await handler(
+            // @ts-expect-error polkaの型定義とランタイムが噛み合っていない様子
+            req,
+            res
+          )
+        } catch (err) {
+          console.error(err)
+
+          res.statusCode = 500
+          res.end(
+            JSON.stringify({
+              error: "Internal Server Error",
+            })
+          )
+        }
+      }),
 
     polka({
       onNoMatch(req, res) {
         res.statusCode = 404
-        res.end(JSON.stringify(db.data.__404))
+        res.end(
+          JSON.stringify({
+            error: "Not Found",
+          })
+        )
       },
     })
   )
